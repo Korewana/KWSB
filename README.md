@@ -3,6 +3,7 @@ Korewana-Web-Server-Builder (KWSB) is a powerful tool to build and configure web
 
 # Summary
 1. [Introduction](#creating-the-kwsb-object)
+2. [Useful Methods](#useful-methods)
 1. [Code Example](#simple-web-server-example)
 
 ## Creating the KWSB Object
@@ -24,6 +25,19 @@ kwsb.addRequestHandler("/", new GetRequestHandler() {
       res.send("Hello World!");
    }
 })
+```
+
+## Useful Methods
+Here are a lot of useful methods and examples
+### `Request#sendFile(File f)`
+Send a file to the client. Content-Type will be set automatically
+
+**Example**:
+```java
+@Override
+public void onRequest(Request req, Response res) {
+   res.sendFile(new File("path_to_file"));
+}
 ```
 
 ## Simple Web-Server Example
