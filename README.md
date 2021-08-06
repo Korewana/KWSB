@@ -29,7 +29,7 @@ kwsb.addRequestHandler("/", new GetRequestHandler() {
 
 ## Useful Methods
 Here are a lot of useful methods and examples
-### `Request#sendFile(File f)`
+### `Response#sendFile(File f)`
 Send a file to the client. Content-Type will be set automatically
 
 **Example**:
