@@ -55,7 +55,7 @@ public static void main(String[] args) {
       }
    });
 
-   kwsb.listen(port).whenComplete((server) -> { //start the server
+   kwsb.listen(port, (server) -> { //start the server
       System.out.println("Server listening to "+server.getIPAddress()+":"+port); //print ip and port
    });
 }
