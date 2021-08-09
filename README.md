@@ -43,6 +43,7 @@ public void onRequest(Request req, Response res) {
 ## Simple Web-Server Example
 ```java
 public static final int PORT = 80; //the port the server listens to
+
 public static void main(String[] args) {
    KWSB kwsb = new KWSB(); //create the object
    
