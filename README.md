@@ -42,9 +42,8 @@ public void onRequest(Request req, Response res) {
 
 ## Simple Web-Server Example
 ```java
+public static final int PORT = 80; //the port the server listens to
 public static void main(String[] args) {
-   int port = 80; //the port the server listens to
-
    KWSB kwsb = new KWSB(); //create the object
    
    //Add a handler to get route "/": localhost:80/
