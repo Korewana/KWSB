@@ -60,3 +60,10 @@ public static void main(String[] args) {
    });
 }
 ```
+
+## Set a custom 404 page
+```java
+kwsb.onHttpNotFound((request, response) -> {
+   response.send("<h1>404 - Page not found</h1>");
+})
+```
