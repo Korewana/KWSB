@@ -25,6 +25,5 @@ hs_err_pid*
 # IntelliJ Files
 /.idea
 /target
-/src/test
 /src/main/resources
 pom.xml
