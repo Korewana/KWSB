@@ -22,10 +22,11 @@ import java.util.*;
 
 public class HttpExchangeUtils {
 
-    private final HttpExchange httpExchange;
-    private final Headers headers;
-    private File htmlFile;
-    private final StringBuilder response;
+    protected final HttpExchange httpExchange;
+    protected final Headers headers;
+    protected final StringBuilder response;
+    protected KWSB kwsb;
+    protected File htmlFile;
 
     /**
      * Initialise the object
@@ -102,6 +103,9 @@ public class HttpExchangeUtils {
      */
     public void setCookie(String name, String value) {
         HttpCookie cookie = new HttpCookie(name, value);
+        if(this.kwsb != null) {
+            cookie.setMaxAge(kwsb.cookie_expiry_max_age);
+        }
         httpExchange.getResponseHeaders().add("Set-Cookie", cookie.toString());
     }
 
@@ -231,6 +235,10 @@ public class HttpExchangeUtils {
         return response;
     }
 
+    public KWSB getKWSB() {
+        return kwsb;
+    }
+
     /**
      * Set the file which should be sent
      *
@@ -240,4 +248,7 @@ public class HttpExchangeUtils {
         this.htmlFile = htmlFile;
     }
 
+    public void setKWSB(KWSB kwsb) {
+        this.kwsb = kwsb;
+    }
 }

@@ -9,10 +9,13 @@
 
 package de.mp.kwsb.internal;
 
+import de.mp.kwsb.internal.entities.Cookie;
 import de.mp.kwsb.internal.errors.HttpException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 public class Response {
 
@@ -34,6 +37,21 @@ public class Response {
                 throw new HttpException("Can't send headers twice.");
             }
         }
+    }
+
+    public void sendFile(File f) throws HttpException {
+        try {
+            this.request.getHttpExchangeUtils().getHttpExchange().sendResponseHeaders(200, f.length());
+            OutputStream outputStream = this.request.getHttpExchangeUtils().getHttpExchange().getResponseBody();
+            Files.copy(f.toPath(), outputStream);
+            outputStream.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setCookie(String key, String value) {
+        this.request.getHttpExchangeUtils().setCookie(key, value);
     }
 
     public Request getRequest() {

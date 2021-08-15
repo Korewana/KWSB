@@ -24,12 +24,9 @@ public class KWSB {
 
     protected HttpServer server;
     protected int port;
+    protected long cookie_expiry_max_age = 2592000L;
     protected final HashMap<String, RequestHandler> requestHandlers = new HashMap<>();
     protected final List<Object> listeners = new LinkedList();
-
-    public KWSB() {
-
-    }
 
     private void callListener(String s, HttpExchange httpExchange) throws HttpException {
         if(this.listeners.size() == 0) return;
@@ -54,6 +51,10 @@ public class KWSB {
 
     public void addRequestHandler(String route, RequestHandler handler) {
         requestHandlers.put(route, handler);
+    }
+
+    public void setCookieExpiry(int cookie_expiry) {
+        this.cookie_expiry_max_age = cookie_expiry;
     }
 
     public KWSB listen(int port) throws Exception {

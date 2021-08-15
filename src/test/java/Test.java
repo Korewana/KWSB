@@ -15,6 +15,8 @@ import de.mp.kwsb.internal.Request;
 import de.mp.kwsb.internal.events.ReadyEvent;
 import de.mp.kwsb.internal.handlers.GetRequestHandler;
 
+import java.io.File;
+
 public class Test extends KWSBListenerAdapter {
 
     public static void main(String[] args) throws Exception {
@@ -23,6 +25,12 @@ public class Test extends KWSBListenerAdapter {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
                 res.send("<h1>Hello World</h1>");
+            }
+        });
+        kwsb.addRequestHandler("/license", new GetRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+                res.sendFile(new File("./LICENSE"));
             }
         });
         kwsb.registerEvents(new Test());

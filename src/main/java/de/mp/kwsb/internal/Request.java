@@ -9,6 +9,13 @@
 
 package de.mp.kwsb.internal;
 
+import de.mp.kwsb.internal.entities.Cookie;
+
+import java.net.HttpCookie;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class Request {
 
     private final HttpExchangeUtils httpExchangeUtils;
@@ -20,4 +27,24 @@ public class Request {
     public HttpExchangeUtils getHttpExchangeUtils() {
         return httpExchangeUtils;
     }
+
+    public Collection<Cookie> getCookies() {
+        Collection<Cookie> return_value = new ArrayList<>();
+        try {
+            List<String> cookie_values = this.httpExchangeUtils.getHttpExchange().getRequestHeaders().get("Cookie");
+            int index = 0;
+            for (String s : cookie_values) {
+                return_value.add(new Cookie(HttpCookie.parse(cookie_values.get(index)).get(0)));
+                index++;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return return_value;
+    }
+
+    public Cookie getCookie(String key) {
+        return new Cookie(this.httpExchangeUtils.getCookie(key));
+    }
+
 }
