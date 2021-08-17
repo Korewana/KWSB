@@ -55,15 +55,24 @@ public static void main(String[] args) {
       }
    });
 
-   kwsb.listen(port, (server) -> { //start the server
-      System.out.println("Server listening to "+server.getIPAddress()+":"+port); //print ip and port
+   kwsb.listen(port).whenReady((readyEvent, err) -> {
+      System.out.println("Server started with port " + readyEvent.getPort());
    });
 }
 ```
 
 ## Set a custom 404 page
+For setting up a custom 404 page, you need to catch the `onHttpNotFound` event.
+But first, you need to extend from the `KWSBListenerAdapter` like that:
 ```java
-kwsb.onHttpNotFound((request, response) -> {
-   response.send("<h1>404 - Page not found</h1>");
-})
+public class Test extends KWSBListenerAdapter {
+   //...
+}
+```
+Then you can override the `onHttpNotFound` function. You can handle it like a normal request.
+```java
+@Override
+public void onHttpNotFound(Request req, Response res) throws HttpException {
+   res.send("<h1>404 - Page not found</h1>");
+}
 ```
