@@ -97,9 +97,9 @@ public class KWSB {
                 StringBuilder stringBuilder = new StringBuilder();
                 for(int i = 1; i<url.length;i++) {
                     stringBuilder.append(url[i]);
-                    if(i!=(url.length-1)) stringBuilder.append("/");
+                    if(i != (url.length-1)) stringBuilder.append("/");
                 }
-                path+=stringBuilder.toString();
+                path += stringBuilder.toString();
                 AtomicReference<RequestHandler> handler = new AtomicReference<>();
                 kwsb.requestHandlers.forEach((route, requestHandler) -> {
                     if(handler.get() != null) return;
