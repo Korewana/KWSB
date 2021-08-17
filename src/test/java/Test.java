@@ -16,23 +16,42 @@ import de.mp.kwsb.internal.events.ReadyEvent;
 import de.mp.kwsb.internal.handlers.GetRequestHandler;
 
 import java.io.File;
+import java.util.UUID;
 
 public class Test extends KWSBListenerAdapter {
 
     public static void main(String[] args) throws Exception {
         KWSB kwsb = new KWSB();
+
         kwsb.addRequestHandler("/", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
                 res.send("<h1>Hello World</h1>");
             }
         });
+
         kwsb.addRequestHandler("/license", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
+                res.setCookie("token", UUID.randomUUID().toString());
                 res.sendFile(new File("./LICENSE"));
             }
         });
+
+        kwsb.addRequestHandler("/bot/:id", new GetRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+                res.send(req.getParam("id"));
+            }
+        });
+
+        kwsb.addRequestHandler("/bot/:id/:opt", new GetRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+                res.send("Today we will "+req.getParam("opt")+" "+req.getParam("id"));
+            }
+        });
+
         kwsb.registerEvents(new Test());
         kwsb.listen(5555);
     }

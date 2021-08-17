@@ -19,14 +19,19 @@ import de.mp.kwsb.internal.handlers.RequestHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class KWSB {
+
+    /*
+            https://ip.de/bot/21324
+     */
 
     protected HttpServer server;
     protected int port;
     protected long cookie_expiry_max_age = 2592000L;
     protected final HashMap<String, RequestHandler> requestHandlers = new HashMap<>();
-    protected final List<Object> listeners = new LinkedList();
+    protected final List<Object> listeners = new LinkedList<>();
 
     private void callListener(String s, HttpExchange httpExchange) throws HttpException {
         if(this.listeners.size() == 0) return;
@@ -34,7 +39,7 @@ public class KWSB {
         if(obj instanceof KWSBListenerAdapter) {
             switch (s) {
                 case "404":
-                    Request request = new Request(new HttpExchangeUtils(httpExchange, null));
+                    Request request = new Request(new HttpExchangeUtils(httpExchange, null), null);
                     ((KWSBListenerAdapter) obj).onHttpNotFound(request, new Response(request));
                     break;
                 case "ready":
@@ -86,16 +91,40 @@ public class KWSB {
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
             try {
+                final HashMap<String, String> params = new HashMap<>();
                 String[] url = httpExchange.getRequestURI().getPath().split("/");
                 String path = "/";
-                if(url.length != 0) path += url[1];
-                RequestHandler handler = kwsb.requestHandlers.get(path);
-                if(handler == null) {
+                StringBuilder stringBuilder = new StringBuilder();
+                for(int i = 1; i<url.length;i++) {
+                    stringBuilder.append(url[i]);
+                    if(i!=(url.length-1)) stringBuilder.append("/");
+                }
+                path+=stringBuilder.toString();
+                AtomicReference<RequestHandler> handler = new AtomicReference<>();
+                kwsb.requestHandlers.forEach((route, requestHandler) -> {
+                    if(handler.get() != null) return;
+                    String[] route_url = route.split("/");
+                    if(url.length != route_url.length) return;
+                    int index = 0;
+                    for (String url_obj : route_url) {
+                        if(!url_obj.startsWith(":")) {
+                            index++;
+                            continue;
+                        }
+                        String var_name = url_obj.split(":")[1];
+                        String value = url[index];
+                        params.put(var_name, value);
+                        index++;
+                    }
+                    handler.set(kwsb.requestHandlers.get(route));
+                });
+                if(handler.get() == null) {
                     kwsb.callListener("404", httpExchange);
                     return;
                 }
-                Request request = new Request(new HttpExchangeUtils(httpExchange, null));
-                handler.onRequest(request, new Response(request));
+                HttpExchangeUtils httpExchangeUtils = new HttpExchangeUtils(httpExchange, null);
+                Request request = new Request(httpExchangeUtils, params);
+                handler.get().onRequest(request, new Response(request));
             } catch(Exception e) {
                 e.printStackTrace();
             }

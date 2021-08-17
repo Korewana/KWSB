@@ -14,14 +14,17 @@ import de.mp.kwsb.internal.entities.Cookie;
 import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 public class Request {
 
     private final HttpExchangeUtils httpExchangeUtils;
+    private final HashMap<String, String> params;
 
-    public Request(HttpExchangeUtils httpExchangeUtils) {
+    public Request(HttpExchangeUtils httpExchangeUtils, HashMap<String, String> params) {
         this.httpExchangeUtils = httpExchangeUtils;
+        this.params = params;
     }
 
     public HttpExchangeUtils getHttpExchangeUtils() {
@@ -47,4 +50,11 @@ public class Request {
         return new Cookie(this.httpExchangeUtils.getCookie(key));
     }
 
+    public String getParam(String name) {
+        return this.params.getOrDefault(name, null);
+    }
+
+    public HashMap<String, String> getParams() {
+        return this.params;
+    }
 }

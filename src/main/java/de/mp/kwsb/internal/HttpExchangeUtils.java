@@ -31,8 +31,11 @@ public class HttpExchangeUtils {
     /**
      * Initialise the object
      *
-     * @param httpExchange the HttpExchange object of the requets
-     * @param file         the file which should be sent
+     * @param httpExchange
+     *        the HttpExchange object of the requets
+     *
+     * @param file
+     *        the file which should be sent
      */
     public HttpExchangeUtils(HttpExchange httpExchange, File file) {
         this.httpExchange = httpExchange;
@@ -44,7 +47,8 @@ public class HttpExchangeUtils {
     /**
      * Parse a file
      *
-     * @throws FileNotFoundException will be thrown when the given file is not found
+     * @throws FileNotFoundException
+     *         will be thrown when the given file is not found
      */
     public void parseFile(HashMap<String, String> constants) throws FileNotFoundException {
         if (!this.htmlFile.exists()) {
@@ -98,8 +102,11 @@ public class HttpExchangeUtils {
     /**
      * Set a cookie
      *
-     * @param name  the name of the cookie
-     * @param value the value of the cookie
+     * @param name
+     *        the name of the cookie
+     *
+     * @param value
+     *        the value of the cookie
      */
     public void setCookie(String name, String value) {
         HttpCookie cookie = new HttpCookie(name, value);
@@ -112,7 +119,9 @@ public class HttpExchangeUtils {
     /**
      * Get a cookie
      *
-     * @param key the name of the cookie
+     * @param key
+     *        the name of the cookie
+     *
      * @return returns the cookie
      */
     public HttpCookie getCookie(String key) {
@@ -137,7 +146,8 @@ public class HttpExchangeUtils {
     /**
      * Send the file and everything else what we set up here
      *
-     * @throws IOException will be thrown when there are some issues due sending the data
+     * @throws IOException
+     *         will be thrown when there are some issues due sending the data
      */
     public void sendData() throws IOException {
         if ("text".equals(this.headers.get("Content-Type").get(0).split("/")[0])) {
@@ -156,8 +166,11 @@ public class HttpExchangeUtils {
     /**
      * Redirect to a url
      *
-     * @param url the url you want to redirect
-     * @throws IOException will be thrown when there are some issues due sending the data
+     * @param url
+     *        the url you want to redirect
+     *
+     * @throws IOException
+     *         will be thrown when there are some issues due sending the data
      */
     public void redirect(String url) throws IOException {
         this.headers.add("Location", url);
@@ -170,7 +183,9 @@ public class HttpExchangeUtils {
     /**
      * Get the url parameter
      *
-     * @param query the query of the HttpExchange object
+     * @param query
+     *        the query of the HttpExchange object
+     *
      * @return returns the url parameters as Map
      */
     public Map<String, String> getUrlParameter(String query) {
@@ -192,8 +207,11 @@ public class HttpExchangeUtils {
     /**
      * Add a header
      *
-     * @param name    the name of the header
-     * @param content the value of the header
+     * @param name
+     *        the name of the header
+     *
+     * @param content
+     *        the value of the header
      */
     public void addHeader(String name, String content) {
         this.headers.add(name, content);
@@ -242,7 +260,8 @@ public class HttpExchangeUtils {
     /**
      * Set the file which should be sent
      *
-     * @param htmlFile the file
+     * @param htmlFile
+     *        the file
      */
     public void setHtmlFile(File htmlFile) {
         this.htmlFile = htmlFile;
