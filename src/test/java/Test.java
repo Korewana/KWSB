@@ -53,12 +53,14 @@ public class Test extends KWSBListenerAdapter {
         });
 
         kwsb.registerEvents(new Test());
-        kwsb.listen(5555);
+        kwsb.listen(5555).whenComplete((readyEvent, err) -> {
+            System.out.println("[Consumer of KWSB#listen()]: Server started with port "+readyEvent.getPort());
+        });
     }
 
     @Override
     public void onReady(ReadyEvent event) {
-        System.out.println("Server started with port "+event.getPort());
+        System.out.println("[Event of the KWSBListenerAdapter]: Server started with port "+event.getPort());
     }
 
     @Override

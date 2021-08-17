@@ -19,6 +19,8 @@ import de.mp.kwsb.internal.handlers.RequestHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class KWSB {
@@ -58,14 +60,16 @@ public class KWSB {
         this.cookie_expiry_max_age = cookie_expiry;
     }
 
-    public KWSB listen(int port) throws Exception {
+    public CompletionStage<ReadyEvent> listen(int port) throws Exception {
         this.port = port;
         this.server = HttpServer.create(new InetSocketAddress(port), 0);
         this.server.createContext("/", new RequestManager(this));
         this.server.setExecutor(null);
         this.server.start();
         this.callListener("ready", null);
-        return this;
+        CompletableFuture<ReadyEvent> future = new CompletableFuture<>();
+        future.complete(new ReadyEvent(this));
+        return future;
     }
 
     public HashMap<String, RequestHandler> getRequestHandlers() {
