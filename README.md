@@ -55,7 +55,7 @@ public static void main(String[] args) {
       }
    });
 
-   kwsb.listen(port).whenReady((readyEvent, err) -> {
+   kwsb.listen(PORT).whenReady((readyEvent, err) -> {
       System.out.println("Server started with port " + readyEvent.getPort());
    });
 }
