@@ -23,10 +23,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class KWSB {
 
-    /*
-            https://ip.de/bot/21324
-     */
-
     protected HttpServer server;
     protected int port;
     protected long cookie_expiry_max_age = 2592000L;
