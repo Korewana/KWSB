@@ -63,7 +63,8 @@ public static void main(String[] args) {
 
 ## Set a custom 404 page
 For setting up a custom 404 page, you need to catch the `onHttpNotFound` event.
-But first, you need to extend from the `KWSBListenerAdapter` like that:
+
+The class needs to extend from the `KWSBListenerAdapter`:
 ```java
 public class Test extends KWSBListenerAdapter {
    //...
