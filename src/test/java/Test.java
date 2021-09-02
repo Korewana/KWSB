@@ -26,7 +26,8 @@ public class Test extends KWSBListenerAdapter {
         kwsb.addRequestHandler("/", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
-                res.send("<h1>Hello World</h1>");
+                if(req.getCookie("token") == null) res.send("baum");
+                res.send(req.getCookie("token").getValue());
             }
         });
 
@@ -34,7 +35,7 @@ public class Test extends KWSBListenerAdapter {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
                 res.setCookie("token", UUID.randomUUID().toString());
-                res.sendFile(new File("./LICENSE"));
+                res.send(req.getCookie("token").getValue());
             }
         });
 
