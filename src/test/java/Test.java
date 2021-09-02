@@ -16,6 +16,7 @@ import de.mp.kwsb.internal.events.ReadyEvent;
 import de.mp.kwsb.internal.handlers.GetRequestHandler;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class Test extends KWSBListenerAdapter {
@@ -26,8 +27,11 @@ public class Test extends KWSBListenerAdapter {
         kwsb.addRequestHandler("/", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
-                if(req.getCookie("token") == null) res.send("baum");
-                res.send(req.getCookie("token").getValue());
+                req.getHttpExchangeUtils().setDefaultHeaders();
+                req.getHttpExchangeUtils().setHtmlFile(new File("./baum.html"));
+                HashMap<String, String> constants = new HashMap<>();
+                req.getHttpExchangeUtils().parseFile(constants);
+                req.getHttpExchangeUtils().sendData();
             }
         });
 
@@ -35,7 +39,7 @@ public class Test extends KWSBListenerAdapter {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
                 res.setCookie("token", UUID.randomUUID().toString());
-                res.send(req.getCookie("token").getValue());
+                res.send("Baum");
             }
         });
 

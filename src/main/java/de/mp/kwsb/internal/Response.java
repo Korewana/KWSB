@@ -9,13 +9,13 @@
 
 package de.mp.kwsb.internal;
 
-import de.mp.kwsb.internal.entities.Cookie;
 import de.mp.kwsb.internal.errors.HttpException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.HashMap;
 
 public class Response {
 
@@ -48,6 +48,13 @@ public class Response {
         } catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void render(File f, HashMap<String, String> constants) throws IOException {
+        this.request.getHttpExchangeUtils().setDefaultHeaders();
+        this.request.getHttpExchangeUtils().setHtmlFile(new File("./baum.html"));
+        this.request.getHttpExchangeUtils().parseFile(constants);
+        this.request.getHttpExchangeUtils().sendData();
     }
 
     public void setCookie(String key, String value) {
