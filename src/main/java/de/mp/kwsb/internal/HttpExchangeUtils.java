@@ -174,9 +174,8 @@ public class HttpExchangeUtils {
      */
     public void redirect(String url) throws IOException {
         this.headers.add("Location", url);
-        this.httpExchange.sendResponseHeaders(302, this.htmlFile.length());
+        this.httpExchange.sendResponseHeaders(302, 0);
         OutputStream outputStream = this.httpExchange.getResponseBody();
-        Files.copy(this.htmlFile.toPath(), outputStream);
         outputStream.close();
     }
 
