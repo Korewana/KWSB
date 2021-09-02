@@ -52,7 +52,7 @@ public class Response {
 
     public void render(File f, HashMap<String, String> constants) throws IOException {
         this.request.getHttpExchangeUtils().setDefaultHeaders();
-        this.request.getHttpExchangeUtils().setHtmlFile(new File("./baum.html"));
+        this.request.getHttpExchangeUtils().setHtmlFile(f);
         this.request.getHttpExchangeUtils().parseFile(constants);
         this.request.getHttpExchangeUtils().sendData();
     }
