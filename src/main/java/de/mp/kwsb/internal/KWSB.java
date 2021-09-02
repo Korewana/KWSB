@@ -105,9 +105,7 @@ public class KWSB {
                 }
                 path += stringBuilder.toString();
                 AtomicReference<RequestHandler> handler = new AtomicReference<>();
-                System.out.println(kwsb.requestHandlers.size());
                 kwsb.requestHandlers.forEach((route, httphandler) -> {
-                    System.out.println(route);
                     if(handler.get() != null) return;
                     String[] route_url = route.split("/");
                     if(url.length != route_url.length) return;
