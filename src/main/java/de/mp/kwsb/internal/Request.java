@@ -21,10 +21,12 @@ public class Request {
 
     private final HttpExchangeUtils httpExchangeUtils;
     private final HashMap<String, String> params;
+    private final String query;
 
     public Request(HttpExchangeUtils httpExchangeUtils, HashMap<String, String> params) {
         this.httpExchangeUtils = httpExchangeUtils;
         this.params = params;
+        this.query = httpExchangeUtils.getHttpExchange().getRequestURI().getQuery();
     }
 
     public HttpExchangeUtils getHttpExchangeUtils() {
@@ -56,5 +58,9 @@ public class Request {
 
     public HashMap<String, String> getParams() {
         return this.params;
+    }
+
+    public String getQuery(String key) {
+        return this.httpExchangeUtils.getUrlParameter(this.query).getOrDefault(key, null);
     }
 }

@@ -12,11 +12,14 @@ package de.mp.kwsb.internal;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import de.mp.kwsb.internal.entities.KWSBList;
 import de.mp.kwsb.internal.errors.HttpException;
+import de.mp.kwsb.internal.events.HttpNotFoundEvent;
 import de.mp.kwsb.internal.events.ReadyEvent;
 import de.mp.kwsb.internal.handlers.RequestHandler;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -28,24 +31,25 @@ public class KWSB {
     protected HttpServer server;
     protected int port;
     protected long cookie_expiry_max_age = 2592000L;
-    protected final HashMap<String, RequestHandler> requestHandlers = new HashMap<>();
+    protected final KWSBList<String, RequestHandler> requestHandlers = new KWSBList<>();
     protected final List<Object> listeners = new LinkedList<>();
 
-    private void callListener(String s, HttpExchange httpExchange) throws HttpException {
+    private <T> void callListener(Class<T> clazz, HttpExchange httpExchange) {
         if(this.listeners.size() == 0) return;
-        Object obj = this.listeners.get(0);
-        if(obj instanceof KWSBListenerAdapter) {
-            switch (s) {
-                case "404":
-                    Request request = new Request(new HttpExchangeUtils(httpExchange, null), null);
-                    ((KWSBListenerAdapter) obj).onHttpNotFound(request, new Response(request));
-                    break;
-                case "ready":
-                    ((KWSBListenerAdapter) obj).onReady(new ReadyEvent(this));
-                default:
-                    return;
+        this.listeners.forEach(obj -> {
+            if(obj instanceof KWSBListenerAdapter) {
+                try {
+                    if(clazz == Class.forName("de.mp.kwsb.internal.events.ReadyEvent")) {
+                        ((KWSBListenerAdapter) obj).onReady(new ReadyEvent(this));
+                    } else if(clazz == Class.forName("de.mp.kwsb.internal.events.HttpNotFoundEvent")) {
+                        Request request = new Request(new HttpExchangeUtils(httpExchange, null), null);
+                        ((KWSBListenerAdapter) obj).onHttpNotFound(request, new Response(request));
+                    }
+                } catch (ClassNotFoundException | HttpException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        });
     }
 
     public void registerEvents(Object... listeners) {
@@ -53,7 +57,7 @@ public class KWSB {
     }
 
     public void addRequestHandler(String route, RequestHandler handler) {
-        requestHandlers.put(route, handler);
+        requestHandlers.add(route, handler);
     }
 
     public void setCookieExpiry(int cookie_expiry) {
@@ -66,13 +70,13 @@ public class KWSB {
         this.server.createContext("/", new RequestManager(this));
         this.server.setExecutor(null);
         this.server.start();
-        this.callListener("ready", null);
+        this.callListener(ReadyEvent.class, null);
         CompletableFuture<ReadyEvent> future = new CompletableFuture<>();
         future.complete(new ReadyEvent(this));
         return future;
     }
 
-    public HashMap<String, RequestHandler> getRequestHandlers() {
+    public KWSBList<String, RequestHandler> getRequestHandlers() {
         return requestHandlers;
     }
 
@@ -101,7 +105,9 @@ public class KWSB {
                 }
                 path += stringBuilder.toString();
                 AtomicReference<RequestHandler> handler = new AtomicReference<>();
-                kwsb.requestHandlers.forEach((route, requestHandler) -> {
+                System.out.println(kwsb.requestHandlers.size());
+                kwsb.requestHandlers.forEach((route, httphandler) -> {
+                    System.out.println(route);
                     if(handler.get() != null) return;
                     String[] route_url = route.split("/");
                     if(url.length != route_url.length) return;
@@ -116,10 +122,10 @@ public class KWSB {
                         params.put(var_name, value);
                         index++;
                     }
-                    handler.set(kwsb.requestHandlers.get(route));
+                    handler.set(httphandler);
                 });
                 if(handler.get() == null) {
-                    kwsb.callListener("404", httpExchange);
+                    kwsb.callListener(HttpNotFoundEvent.class, httpExchange);
                     return;
                 }
                 HttpExchangeUtils httpExchangeUtils = new HttpExchangeUtils(httpExchange, null);

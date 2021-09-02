@@ -38,6 +38,13 @@ public class Test extends KWSBListenerAdapter {
             }
         });
 
+        kwsb.addRequestHandler("/user/me", new GetRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+                res.send(req.getParam("id"));
+            }
+        });
+
         kwsb.addRequestHandler("/bot/:id", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
