@@ -16,6 +16,8 @@ import de.mp.kwsb.internal.entities.KWSBList;
 import de.mp.kwsb.internal.errors.HttpException;
 import de.mp.kwsb.internal.events.HttpNotFoundEvent;
 import de.mp.kwsb.internal.events.ReadyEvent;
+import de.mp.kwsb.internal.handlers.GetRequestHandler;
+import de.mp.kwsb.internal.handlers.PostRequestHandler;
 import de.mp.kwsb.internal.handlers.RequestHandler;
 
 import java.io.IOException;
@@ -96,6 +98,7 @@ public class KWSB {
         public void handle(HttpExchange httpExchange) throws IOException {
             try {
                 final HashMap<String, String> params = new HashMap<>();
+                final String method = httpExchange.getRequestMethod().toLowerCase();
                 String[] url = httpExchange.getRequestURI().getPath().split("/");
                 String path = "/";
                 StringBuilder stringBuilder = new StringBuilder();
@@ -107,6 +110,8 @@ public class KWSB {
                 AtomicReference<RequestHandler> handler = new AtomicReference<>();
                 kwsb.requestHandlers.forEach((route, httphandler) -> {
                     if(handler.get() != null) return;
+                    if(method.equals("get") && !(httphandler instanceof GetRequestHandler)) return;
+                    if(method.equals("post") && !(httphandler instanceof PostRequestHandler)) return;
                     String[] route_url = route.split("/");
                     if(url.length != route_url.length) return;
                     int index = 0;

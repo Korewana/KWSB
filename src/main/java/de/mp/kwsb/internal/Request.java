@@ -9,9 +9,14 @@
 
 package de.mp.kwsb.internal;
 
+import com.sun.net.httpserver.Headers;
 import de.mp.kwsb.internal.entities.Cookie;
+import org.json.JSONObject;
 
+import java.io.*;
 import java.net.HttpCookie;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -64,4 +69,48 @@ public class Request {
     public String getQuery(String key) {
         return this.httpExchangeUtils.getUrlParameter(this.query).getOrDefault(key, null);
     }
+
+    public Headers getHeaders() {
+        return this.httpExchangeUtils.getHttpExchange().getRequestHeaders();
+    }
+
+    public List<String> getHeaders(String key) {
+        return this.httpExchangeUtils.getHttpExchange().getRequestHeaders().getOrDefault(key, null);
+    }
+
+    public String getHeader(String key) {
+        List<String> headers = getHeaders(key);
+        if(headers == null || headers.size() == 0) return null; else return headers.get(0);
+    }
+
+    public JSONObject getBodyAsJSON() {
+        InputStream inputStream = this.getHttpExchangeUtils().getHttpExchange().getRequestBody();
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(new InputStreamReader
+                (inputStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c = 0;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new JSONObject(textBuilder.toString());
+    }
+
+    public String getBody() {
+        InputStream inputStream = this.getHttpExchangeUtils().getHttpExchange().getRequestBody();
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(new InputStreamReader
+                (inputStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c = 0;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return textBuilder.toString();
+    }
+
 }

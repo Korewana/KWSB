@@ -14,9 +14,9 @@ import de.mp.kwsb.internal.Response;
 import de.mp.kwsb.internal.Request;
 import de.mp.kwsb.internal.events.ReadyEvent;
 import de.mp.kwsb.internal.handlers.GetRequestHandler;
+import de.mp.kwsb.internal.handlers.PostRequestHandler;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class Test extends KWSBListenerAdapter {
@@ -27,11 +27,14 @@ public class Test extends KWSBListenerAdapter {
         kwsb.addRequestHandler("/", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
-                req.getHttpExchangeUtils().setDefaultHeaders();
-                req.getHttpExchangeUtils().setHtmlFile(new File("./baum.html"));
-                HashMap<String, String> constants = new HashMap<>();
-                req.getHttpExchangeUtils().parseFile(constants);
-                req.getHttpExchangeUtils().sendData();
+                res.render(new File("./baum.html"), null);
+            }
+        });
+
+        kwsb.addRequestHandler("/api/edit", new PostRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+
             }
         });
 
