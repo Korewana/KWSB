@@ -9,6 +9,7 @@
 
 package de.mp.kwsb.internal;
 
+import com.sun.net.httpserver.Headers;
 import de.mp.kwsb.internal.errors.HttpException;
 
 import java.io.File;
@@ -64,4 +65,9 @@ public class Response {
     public Request getRequest() {
         return request;
     }
+
+    public Headers getHeaders() {
+        return this.request.getHttpExchangeUtils().getHeaders();
+    }
+
 }

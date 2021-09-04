@@ -27,7 +27,7 @@ public class Test extends KWSBListenerAdapter {
         kwsb.addRequestHandler("/", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
-                res.render(new File("./baum.html"), null);
+                res.render(new File("./www/baum.html"), null);
             }
         });
 
