@@ -42,7 +42,11 @@ public class Test extends KWSBListenerAdapter {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
                 res.setCookie("token", UUID.randomUUID().toString());
-                res.send("Katze");
+                if(req.getCookie("token") != null) {
+                    res.send(req.getCookie("token").getValue());
+                } else {
+                    res.send("Not found");
+                }
             }
         });
 

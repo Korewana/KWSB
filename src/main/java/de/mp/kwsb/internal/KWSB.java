@@ -21,11 +21,11 @@ import de.mp.kwsb.internal.handlers.PostRequestHandler;
 import de.mp.kwsb.internal.handlers.RequestHandler;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class KWSB {
@@ -96,48 +96,51 @@ public class KWSB {
 
         @Override
         public void handle(HttpExchange httpExchange) throws IOException {
-            try {
-                final HashMap<String, String> params = new HashMap<>();
-                final String method = httpExchange.getRequestMethod().toLowerCase();
-                String[] url = httpExchange.getRequestURI().getPath().split("/");
-                String path = "/";
-                StringBuilder stringBuilder = new StringBuilder();
-                for(int i = 1; i<url.length;i++) {
-                    stringBuilder.append(url[i]);
-                    if(i != (url.length-1)) stringBuilder.append("/");
-                }
-                path += stringBuilder.toString();
-                AtomicReference<RequestHandler> handler = new AtomicReference<>();
-                kwsb.requestHandlers.forEach((route, httphandler) -> {
-                    if(handler.get() != null) return;
-                    if(method.equals("get") && !(httphandler instanceof GetRequestHandler)) return;
-                    if(method.equals("post") && !(httphandler instanceof PostRequestHandler)) return;
-                    String[] route_url = route.split("/");
-                    if(url.length != route_url.length) return;
-                    if(!Arrays.toString(route_url).equalsIgnoreCase(Arrays.toString(url))) return;
-                    int index = 0;
-                    for (String url_obj : route_url) {
-                        if(!url_obj.startsWith(":")) {
-                            index++;
-                            continue;
-                        }
-                        String var_name = url_obj.split(":")[1];
-                        String value = url[index];
-                        params.put(var_name, value);
-                        index++;
+            new Thread(() -> {
+                try {
+                    final HashMap<String, String> params = new HashMap<>();
+                    final String method = httpExchange.getRequestMethod().toLowerCase();
+                    String[] url = httpExchange.getRequestURI().getPath().split("/");
+                    String path = "/";
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for(int i = 1; i<url.length;i++) {
+                        stringBuilder.append(url[i]);
+                        if(i != (url.length-1)) stringBuilder.append("/");
                     }
-                    handler.set(httphandler);
-                });
-                if(handler.get() == null) {
-                    kwsb.callListener(HttpNotFoundEvent.class, httpExchange);
-                    return;
+                    path += stringBuilder.toString();
+                    AtomicReference<RequestHandler> handler = new AtomicReference<>();
+                    kwsb.requestHandlers.forEach((route, httphandler) -> {
+                        if(handler.get() != null) return;
+                        if(method.equals("get") && !(httphandler instanceof GetRequestHandler)) return;
+                        if(method.equals("post") && !(httphandler instanceof PostRequestHandler)) return;
+                        String[] route_url = route.split("/");
+                        if(Arrays.toString(route_url).contains(":")) {
+                            if (url.length != route_url.length) return;
+                        } else if (!Arrays.toString(route_url).equalsIgnoreCase(Arrays.toString(url))) return;
+                        int index = 0;
+                        for (String url_obj : route_url) {
+                            if(!url_obj.startsWith(":")) {
+                                index++;
+                                continue;
+                            }
+                            String var_name = url_obj.split(":")[1];
+                            String value = url[index];
+                            params.put(var_name, value);
+                            index++;
+                        }
+                        handler.set(httphandler);
+                    });
+                    if(handler.get() == null) {
+                        kwsb.callListener(HttpNotFoundEvent.class, httpExchange);
+                        return;
+                    }
+                    HttpExchangeUtils httpExchangeUtils = new HttpExchangeUtils(httpExchange, null);
+                    Request request = new Request(httpExchangeUtils, params);
+                    handler.get().onRequest(request, new Response(request));
+                } catch(Exception e) {
+                    e.printStackTrace();
                 }
-                HttpExchangeUtils httpExchangeUtils = new HttpExchangeUtils(httpExchange, null);
-                Request request = new Request(httpExchangeUtils, params);
-                handler.get().onRequest(request, new Response(request));
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
+            }).start();
         }
     }
 
