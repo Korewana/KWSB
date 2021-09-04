@@ -114,6 +114,7 @@ public class KWSB {
                     if(method.equals("post") && !(httphandler instanceof PostRequestHandler)) return;
                     String[] route_url = route.split("/");
                     if(url.length != route_url.length) return;
+                    if(!Arrays.toString(route_url).equalsIgnoreCase(Arrays.toString(url))) return;
                     int index = 0;
                     for (String url_obj : route_url) {
                         if(!url_obj.startsWith(":")) {

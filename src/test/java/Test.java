@@ -38,6 +38,14 @@ public class Test extends KWSBListenerAdapter {
             }
         });
 
+        kwsb.addRequestHandler("/what", new GetRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+                res.setCookie("token", UUID.randomUUID().toString());
+                res.send("Katze");
+            }
+        });
+
         kwsb.addRequestHandler("/license", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
