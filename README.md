@@ -42,6 +42,7 @@ public void onRequest(Request req, Response res) {
 
 ### Response.render(File f, HashMap<String, String> constants)
 Render a file
+
 **Example**
 ```java
 @Override
