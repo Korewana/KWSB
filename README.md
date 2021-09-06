@@ -40,6 +40,16 @@ public void onRequest(Request req, Response res) {
 }
 ```
 
+### Response.render(File f, HashMap<String, String> constants)
+Render a file
+**Example**
+@Override
+public void onRequest(Request req, Response res) {
+   HashMap<String, String> constants = new HashMap<>();
+   constants.put("version", "1.0.0");
+   res.render(new File("path_to_file"), constants);
+}
+
 ## Simple Web-Server Example
 ```java
 public static final int PORT = 80; //the port the server listens to
