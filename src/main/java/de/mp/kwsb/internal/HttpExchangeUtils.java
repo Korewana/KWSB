@@ -137,7 +137,8 @@ public class HttpExchangeUtils {
                 index++;
             }
             if (cookie.equalsIgnoreCase("")) return null;
-            return HttpCookie.parse(cookie).get(0);
+            HttpCookie httpCookie = HttpCookie.parse(cookie).get(0);
+            return (httpCookie.getValue().equalsIgnoreCase("null") ? null : httpCookie);
         } catch (Exception e) {
             return null;
         }

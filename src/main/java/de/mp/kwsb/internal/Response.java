@@ -15,6 +15,7 @@ import de.mp.kwsb.internal.errors.HttpException;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpCookie;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
@@ -61,6 +62,12 @@ public class Response {
 
     public void setCookie(String key, String value) {
         this.request.getHttpExchangeUtils().setCookie(key, value);
+    }
+
+    public void removeCookie(String key) {
+        HttpCookie cookie = new HttpCookie(key, "null");
+        cookie.setDiscard(true);
+        this.request.getHttpExchangeUtils().getHttpExchange().getResponseHeaders().add("Set-Cookie", cookie.toString());
     }
 
     public Request getRequest() {

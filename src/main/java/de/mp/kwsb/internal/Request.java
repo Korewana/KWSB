@@ -54,7 +54,6 @@ public class Request {
     }
 
     public Cookie getCookie(String key) {
-        if(this.httpExchangeUtils.getCookie(key) == null) return null;
         return new Cookie(this.httpExchangeUtils.getCookie(key));
     }
 

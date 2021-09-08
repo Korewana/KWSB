@@ -24,7 +24,7 @@ public class Cookie {
     }
 
     public String getValue() {
-        return this.httpCookie.getValue();
+        return (this.httpCookie.getValue().equalsIgnoreCase("null") ? null : this.httpCookie.getValue());
     }
 
     public HttpCookie getHttpCookie() {
