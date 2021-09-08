@@ -15,6 +15,7 @@ import de.mp.kwsb.internal.errors.HttpException;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 
@@ -68,6 +69,10 @@ public class Response {
 
     public Headers getHeaders() {
         return this.request.getHttpExchangeUtils().getHeaders();
+    }
+
+    public void redirect(URL url) throws IOException {
+        this.request.getHttpExchangeUtils().redirect(url.toString());
     }
 
 }
