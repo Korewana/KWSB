@@ -71,8 +71,8 @@ public class Response {
         return this.request.getHttpExchangeUtils().getHeaders();
     }
 
-    public void redirect(URL url) throws IOException {
-        this.request.getHttpExchangeUtils().redirect(url.toString());
+    public void redirect(String url) throws IOException {
+        this.request.getHttpExchangeUtils().redirect(url);
     }
 
 }
