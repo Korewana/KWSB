@@ -116,11 +116,14 @@ public class KWSB {
                         String[] route_url = route.split("/");
                         if(Arrays.toString(route_url).contains(":")) {
                             if (url.length != route_url.length) return;
-                        } else if (!Arrays.toString(route_url).equalsIgnoreCase(Arrays.toString(url))) return;
+                        } else {
+                            if (!Arrays.toString(route_url).equalsIgnoreCase(Arrays.toString(url))) return;
+                        }
                         int index = 0;
                         for (String url_obj : route_url) {
                             if(!url_obj.startsWith(":")) {
                                 index++;
+                                if(!url_obj.equalsIgnoreCase(url[index-1])) return;
                                 continue;
                             }
                             String var_name = url_obj.split(":")[1];

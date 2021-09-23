@@ -31,7 +31,28 @@ public class Test extends KWSBListenerAdapter {
             }
         });
 
-        kwsb.addRequestHandler("/api/edit", new PostRequestHandler() {
+        kwsb.addRequestHandler("/baum", new GetRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+                res.send("Baum");
+            }
+        });
+
+        kwsb.addRequestHandler("/bot/:id", new GetRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+                res.send(req.getParam("id"));
+            }
+        });
+
+        kwsb.addRequestHandler("/user/:id", new GetRequestHandler() {
+            @Override
+            public void onRequest(Request req, Response res) throws Exception {
+                res.send("User ID: "+req.getParam("id"));
+            }
+        });
+
+/*        kwsb.addRequestHandler("/api/edit", new PostRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
 
@@ -77,7 +98,7 @@ public class Test extends KWSBListenerAdapter {
             public void onRequest(Request req, Response res) throws Exception {
                 res.send("Today we will "+req.getParam("opt")+" "+req.getParam("id"));
             }
-        });
+        });*/
 
         kwsb.registerEvents(new Test());
         kwsb.listen(5555).whenComplete((readyEvent, err) -> {
