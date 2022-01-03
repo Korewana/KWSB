@@ -154,14 +154,11 @@ public class KWSB {
                         ArrayList<String> list = new ArrayList<>();
                         Collections.addAll(list, atomic_route.get().split("/"));
                         Collections.addAll(list, Arrays.copyOfRange(route_url, 1, route_url.length));
-                        System.out.println(Arrays.toString(list.toArray(new String[atomic_route.get().length()])));
                         int index = 0;
                         for (String url_obj : list.toArray(new String[atomic_route.get().length()])) {
                             if(url_obj == null) break;
                             if(!url_obj.startsWith(":")) {
                                 index++;
-                                System.out.println("URLOBJ: "+url_obj+" "+index);
-                                System.out.println("URL: "+url[index-1]+ " "+ index);
                                 if(!url_obj.equalsIgnoreCase(url[index-1])) return;
                                 continue;
                             }
