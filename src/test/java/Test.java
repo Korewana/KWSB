@@ -8,16 +8,14 @@
  */
 
 import de.mp.kwsb.internal.KWSB;
-import de.mp.kwsb.internal.errors.HttpException;
+import de.mp.kwsb.internal.handlers.GetRequestHandler;
+import de.mp.kwsb.internal.handlers.Router;
+import de.mp.kwsb.internal.handlers.RouterInterface;
+import de.mp.kwsb.internal.handlers.errors.HttpException;
 import de.mp.kwsb.internal.KWSBListenerAdapter;
 import de.mp.kwsb.internal.Response;
 import de.mp.kwsb.internal.Request;
 import de.mp.kwsb.internal.events.ReadyEvent;
-import de.mp.kwsb.internal.handlers.GetRequestHandler;
-import de.mp.kwsb.internal.handlers.PostRequestHandler;
-
-import java.io.File;
-import java.util.UUID;
 
 public class Test extends KWSBListenerAdapter {
 
@@ -27,78 +25,10 @@ public class Test extends KWSBListenerAdapter {
         kwsb.addRequestHandler("/", new GetRequestHandler() {
             @Override
             public void onRequest(Request req, Response res) throws Exception {
-                res.render(new File("./www/baum.html"), null);
+                res.send("<h1>Hello World!</h1>");
             }
         });
-
-        kwsb.addRequestHandler("/baum", new GetRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-                res.send("Baum");
-            }
-        });
-
-        kwsb.addRequestHandler("/bot/:id", new GetRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-                res.send(req.getParam("id"));
-            }
-        });
-
-        kwsb.addRequestHandler("/user/:id", new GetRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-                res.send("User ID: "+req.getParam("id"));
-            }
-        });
-
-/*        kwsb.addRequestHandler("/api/edit", new PostRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-
-            }
-        });
-
-        kwsb.addRequestHandler("/what", new GetRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-                res.setCookie("token", UUID.randomUUID().toString());
-                if(req.getCookie("token") != null) {
-                    res.send(req.getCookie("token").getValue());
-                } else {
-                    res.send("Not found");
-                }
-            }
-        });
-
-        kwsb.addRequestHandler("/license", new GetRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-                res.setCookie("token", UUID.randomUUID().toString());
-                res.send("Baum");
-            }
-        });
-
-        kwsb.addRequestHandler("/user/me", new GetRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-                res.send(req.getParam("id"));
-            }
-        });
-
-        kwsb.addRequestHandler("/bot/:id", new GetRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-                res.send(req.getParam("id"));
-            }
-        });
-
-        kwsb.addRequestHandler("/bot/:id/:opt", new GetRequestHandler() {
-            @Override
-            public void onRequest(Request req, Response res) throws Exception {
-                res.send("Today we will "+req.getParam("opt")+" "+req.getParam("id"));
-            }
-        });*/
+        kwsb.addRouter("/api", new TestRouter().start());
 
         kwsb.registerEvents(new Test());
         kwsb.listen(5555).whenComplete((readyEvent, err) -> {

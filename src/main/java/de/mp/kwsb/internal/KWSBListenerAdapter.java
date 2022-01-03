@@ -9,7 +9,7 @@
 
 package de.mp.kwsb.internal;
 
-import de.mp.kwsb.internal.errors.HttpException;
+import de.mp.kwsb.internal.handlers.errors.HttpException;
 import de.mp.kwsb.internal.events.ReadyEvent;
 
 public abstract class KWSBListenerAdapter {

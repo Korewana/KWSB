@@ -10,13 +10,12 @@
 package de.mp.kwsb.internal;
 
 import com.sun.net.httpserver.Headers;
-import de.mp.kwsb.internal.errors.HttpException;
+import de.mp.kwsb.internal.handlers.errors.HttpException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpCookie;
-import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 

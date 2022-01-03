@@ -7,7 +7,7 @@
  *    https://www.gnu.org/licenses/gpl-3.0.txt
  */
 
-package de.mp.kwsb.internal.errors;
+package de.mp.kwsb.internal.handlers.errors;
 
 public class HttpException extends Exception {
 
