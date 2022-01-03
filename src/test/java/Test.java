@@ -29,6 +29,25 @@ public class Test extends KWSBListenerAdapter {
             }
         });
         kwsb.addRouter("/api", new TestRouter().start());
+        kwsb.addRouter("/baum", new RouterInterface() {
+            final Router r = new Router();
+
+            @Override
+            public Router getRouter() {
+                return r;
+            }
+
+            @Override
+            public RouterInterface start() {
+                getRouter().addRequestHandler("/endpoint", new GetRequestHandler() {
+                    @Override
+                    public void onRequest(Request req, Response res) throws Exception {
+                        res.send("<h1>Ich mag Züge</h1>");
+                    }
+                });
+                return this;
+            }
+        }.start());
 
         kwsb.registerEvents(new Test());
         kwsb.listen(5555).whenComplete((readyEvent, err) -> {
